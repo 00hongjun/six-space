@@ -1,4 +1,4 @@
-package com.sixshop.sixspace.home.adapter.presentation.api;
+package com.sixshop.sixspace.home.presentation;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

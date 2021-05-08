@@ -1,4 +1,4 @@
-package com.sixshop.sixspace.user.adapter.presentation.api;
+package com.sixshop.sixspace.user.presentation;
 
 import org.springframework.web.bind.annotation.RestController;
 
