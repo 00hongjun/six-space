@@ -23,6 +23,11 @@ public class VacationLocalDateTime {
     }
 
     public static VacationLocalDateTime of(LocalDate date, LocalTime time) {
+        if ((time.getMinute() % 10) != 0) {
+            throw new IllegalArgumentException("10분 단위로 설정 가능");
+        }
+
+        time = time.withSecond(0);
         return new VacationLocalDateTime(LocalDateTime.of(date, time));
     }
 

@@ -1,12 +1,15 @@
 package com.sixshop.sixspace.vacation.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 class VacationLocalDateTimeTest {
 
@@ -39,6 +42,48 @@ class VacationLocalDateTimeTest {
         assertThat(target1)
             .isEqualTo(target2)
             .isEqualTo(target3);
+    }
+
+    @DisplayName("초 단위는 버린다")
+    @ParameterizedTest
+    @ValueSource(ints = {0, 1, 5, 10, 20, 30, 40, 50, 59})
+    void of_second(int second) {
+        // given
+        LocalTime localTime = LocalTime.of(9, 10, second);
+        LocalTime compare = LocalTime.of(9, 10);
+
+        // when
+        VacationLocalDateTime target = VacationLocalDateTime.of(localDate, localTime);
+
+        // then
+        System.out.println(target.getTime());
+        System.out.println(compare);
+        assertThat(target.getTime().toLocalTime())
+            .isEqualTo(compare);
+    }
+
+    @DisplayName("10분 단위로 설정 가능 - 성공")
+    @ParameterizedTest
+    @ValueSource(ints = {0, 10, 20, 30, 40, 50})
+    void of_minute_success(int minute) {
+        // given
+        LocalTime localTime = LocalTime.of(9, minute);
+
+        // then
+        VacationLocalDateTime.of(localDate, localTime);
+    }
+
+    @DisplayName("10분 단위로 설정 가능 - 실패")
+    @ParameterizedTest
+    @ValueSource(ints = {1, 5, 9, 11, 21, 29, 31, 59})
+    void of_minute_fail(int minute) {
+        // given
+        LocalTime localTime = LocalTime.of(9, minute);
+
+        // then
+        assertThatThrownBy(() -> VacationLocalDateTime.of(localDate, localTime))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("10분 단위로 설정 가능");
     }
 
     @DisplayName("시간 더하고 비교하기")
