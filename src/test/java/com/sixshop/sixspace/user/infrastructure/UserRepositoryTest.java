@@ -1,6 +1,7 @@
 package com.sixshop.sixspace.user.infrastructure;
 
 import com.sixshop.sixspace.user.domain.User;
+import com.sixshop.sixspace.user.presentation.dto.UserCreateRequest;
 import javax.persistence.EntityManager;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -23,7 +24,11 @@ class UserRepositoryTest {
     @Test
     void save() {
         // given
-        User user = User.of("hongjun");
+        UserCreateRequest dto = new UserCreateRequest();
+        dto.setId("hongjun");
+        dto.setPassword("123");
+
+        User user = User.of(dto);
         em.persist(user);
 
         // when
