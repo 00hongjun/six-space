@@ -11,8 +11,9 @@ public class FilteredVacation {
     private int day;
     private boolean isFull;
 
-    public FilteredVacation(final String userId, final int day) {
+    public FilteredVacation(final String userId, final int day, final int useHourOfDay) {
         this.userId = userId;
         this.day = day;
+        this.isFull = useHourOfDay == 8;
     }
 }
