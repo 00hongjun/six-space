@@ -5,7 +5,6 @@ import static java.util.stream.Collectors.groupingBy;
 
 import com.sixshop.sixspace.vacation.domain.Vacation;
 import com.sixshop.sixspace.vacation.repository.VacationRepository;
-import com.sixshop.sixspace.vacation.repository.VacationRepository2;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -24,7 +23,6 @@ public class VacationService {
     private static final int LUNCH_HOUR = 13;
     private static final int FINISH_WORK_HOUR = 18;
     private final VacationRepository vacationRepository;
-    private final VacationRepository2 vacationRepository2;
 
     public List<FilteredVacation> getVacationsOfMonth(final int year, final int month) {
         final List<Vacation> vacations = findAllByBetweenDates(year, month);
@@ -39,8 +37,7 @@ public class VacationService {
                                                            .withHour(23)
                                                            .withMinute(59);
 
-//        return vacationRepository.findAllByBetweenDates(startDayOfMonth, endDayOfMonth);
-        return vacationRepository2.findAllByBetweenDates(startDayOfMonth, endDayOfMonth);
+        return vacationRepository.findAllByBetweenDates(startDayOfMonth, endDayOfMonth);
     }
 
     /**

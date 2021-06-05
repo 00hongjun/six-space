@@ -1,17 +1,32 @@
 package com.sixshop.sixspace.vacation.repository;
 
+import static com.sixshop.sixspace.vacation.domain.QVacation.vacation;
+
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.sixshop.sixspace.vacation.domain.Vacation;
 import java.time.LocalDateTime;
 import java.util.List;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Repository;
 
-public interface VacationRepository extends JpaRepository<Vacation, Integer> {
+@RequiredArgsConstructor
+@Repository
+public class VacationRepository {
 
-    // TODO : USER 테이블과 INNER JOIN 해서 USER_NAME을 가져와야함
-    @Query(value = "SELECT v FROM Vacation v WHERE v.startDateTime BETWEEN :start AND :end "
-                                             + "OR v.endDateTime BETWEEN :start AND :end "
-                                             + "ORDER BY v.startDateTime")
-    List<Vacation> findAllByBetweenDates(@Param("start") final LocalDateTime start, @Param("end") final LocalDateTime end);
+    private final JPAQueryFactory queryFactory;
+
+//    @Query(value = "SELECT v FROM Vacation v WHERE v.startDateTime BETWEEN :start AND :end "
+//        + "OR v.endDateTime BETWEEN :start AND :end "
+//        + "ORDER BY v.startDateTime")
+//    List<Vacation> findAllByBetweenDates(@Param("start") final LocalDateTime start, @Param("end") final LocalDateTime end);
+
+    public List<Vacation> findAllByBetweenDates(LocalDateTime start, final LocalDateTime end) {
+        return queryFactory
+            .select(vacation)
+            .from(vacation)
+            .where(vacation.startDateTime.between(start, end)
+                                         .or(vacation.endDateTime.between(start, end)))
+            .orderBy(vacation.startDateTime.asc())
+            .fetch();
+    }
 }
