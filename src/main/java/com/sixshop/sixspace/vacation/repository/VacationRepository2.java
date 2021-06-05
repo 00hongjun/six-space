@@ -13,9 +13,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class VacationRepository2 {
 
-    private JPAQueryFactory queryFactory;
+    private final JPAQueryFactory queryFactory;
 
-    List<Vacation> findAllByBetweenDates(LocalDateTime start, final LocalDateTime end) {
+    public List<Vacation> findAllByBetweenDates(LocalDateTime start, final LocalDateTime end) {
         return queryFactory
             .select(vacation)
             .from(vacation)
