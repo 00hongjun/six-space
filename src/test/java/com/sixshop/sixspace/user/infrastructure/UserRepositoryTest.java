@@ -2,20 +2,18 @@ package com.sixshop.sixspace.user.infrastructure;
 
 import com.sixshop.sixspace.user.domain.User;
 import com.sixshop.sixspace.user.presentation.dto.UserCreateRequest;
-import javax.persistence.EntityManager;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
-@SpringBootTest
-@Transactional
+@DataJpaTest
 class UserRepositoryTest {
 
     @Autowired
-    EntityManager em;
+    TestEntityManager em;
 
     @Autowired
     UserRepository userRepository;

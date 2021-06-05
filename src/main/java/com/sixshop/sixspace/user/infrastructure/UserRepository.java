@@ -7,5 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface UserRepository extends JpaRepository<User, String> {
 
     @Override
-    Optional<User> findById(String s);
+    Optional<User> findById(String userId);
+
 }
