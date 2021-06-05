@@ -1,6 +1,7 @@
 package com.sixshop.sixspace.user.domain;
 
-import java.time.LocalDateTime;
+import com.sixshop.sixspace.user.presentation.dto.UserCreateRequest;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Entity;
@@ -20,11 +21,25 @@ public class User {
     private String nickName;
     private String email;
     private String slackId;
-    private LocalDateTime joinDate;
-    private LocalDateTime resignationDate;
+    private LocalDate joinDate;
+    private LocalDate resignationDate;
     private Integer totalVacationTime;
 
     @OneToMany(mappedBy = "user")
     private List<Role> roles = new ArrayList<>();
 
+    public static User of(UserCreateRequest request) {
+        User result = new User();
+        result.id = request.getId();
+        result.password = request.getPassword();
+        result.name = request.getName();
+        result.nickName = request.getNickName();
+        result.email = request.getEmail();
+        result.slackId = request.getSlackId();
+        result.joinDate = LocalDate.now();
+        result.resignationDate = null;
+        result.totalVacationTime = 100;
+
+        return result;
+    }
 }
