@@ -9,11 +9,13 @@ public class FilteredVacation {
     private String userId;
     // private String userName;
     private int day;
+    private int useHour;
     private boolean isFull;
 
-    public FilteredVacation(final String userId, final int day, final int useHourOfDay) {
+    public FilteredVacation(final String userId, final int day, final int useHour) {
         this.userId = userId;
         this.day = day;
-        this.isFull = useHourOfDay == 8;
+        this.useHour = useHour;
+        this.isFull = useHour == 8;
     }
 }
