@@ -38,6 +38,7 @@ public class VacationService {
     public void getVacationsOfMonth(final int year, final int month) {
         final List<Vacation> vacations = findAllByBetweenDates(year, month);
         final List<FilteredVacation> filtered = filterVacationOfMonth(year, month, vacations);
+        System.out.println();
     }
 
     /**
@@ -60,7 +61,6 @@ public class VacationService {
             int startHour = vacation.getStartDateTime().getHour();
 
             LocalDate cursor = from;
-
             while (!cursor.isAfter(to)) {
                 int use = getUseHour(startHour, totalUseHour);
                 if (!cursor.isBefore(startDayOfMonth) && !cursor.isAfter(endDayOfMonth)) {
@@ -80,14 +80,15 @@ public class VacationService {
         return filtered;
     }
 
-    private int getUseHour(final int startHour, final int totalUseVacationHour) {
-        if (totalUseVacationHour < 8) {
-            return totalUseVacationHour;
+    private int getUseHour(final int startHour, final int totalUseHour) {
+        if (startHour + totalUseHour <= FINISH_WORK_HOUR) {
+            return totalUseHour;
         }
 
+        int useHour = FINISH_WORK_HOUR - startHour;
         if (startHour < LUNCH_HOUR) {
-            return FINISH_WORK_HOUR - startHour - 1;
+            return useHour - 1;
         }
-        return FINISH_WORK_HOUR - startHour;
+        return useHour;
     }
 }
