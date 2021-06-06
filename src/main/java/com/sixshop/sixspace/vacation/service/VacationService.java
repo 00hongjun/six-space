@@ -112,26 +112,20 @@ public class VacationService {
 
     private List<DayOfMonthVacation> distinctDayVacation(final List<DayOfMonthVacation> filtered) {
         final Map<Integer, Map<String, List<DayOfMonthVacation>>> dayGroups = filtered.stream()
-                                                                                      .collect(groupingBy(
-                                                                                          DayOfMonthVacation::getDay
-                                                                                          , groupingBy(
-                                                                                              DayOfMonthVacation::getUserId)
+                                                                                      .collect(groupingBy(DayOfMonthVacation::getDay
+                                                                                          , groupingBy(DayOfMonthVacation::getUserId)
                                                                                       ));
 
         List<DayOfMonthVacation> result = new ArrayList<>();
         for (Map.Entry<Integer, Map<String, List<DayOfMonthVacation>>> dayEntry : dayGroups.entrySet()) {
-            int day = dayEntry.getKey();
-            String userId;
-            int todayUseHour;
             for (Map.Entry<String, List<DayOfMonthVacation>> userEntry : dayEntry.getValue().entrySet()) {
-                userId = userEntry.getKey();
-                todayUseHour = userEntry.getValue()
+                int todayUseHour = userEntry.getValue()
                                         .stream()
                                         .mapToInt(DayOfMonthVacation::getUseHour)
                                         .reduce(Integer::sum)
                                         .orElseThrow(() -> new IllegalArgumentException("사용한 휴가 시간을 계산할 수 없습니다. 관리자에게 문의하세요"));
 
-                result.add(new DayOfMonthVacation(userId, day, todayUseHour));
+                result.add(new DayOfMonthVacation(userEntry.getKey(), dayEntry.getKey(), todayUseHour));
             }
         }
         return result;
