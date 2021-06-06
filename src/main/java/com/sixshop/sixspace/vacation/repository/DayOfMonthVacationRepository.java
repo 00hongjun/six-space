@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 
 @RequiredArgsConstructor
 @Repository
-public class VacationRepository {
+public class DayOfMonthVacationRepository {
 
     private final JPAQueryFactory queryFactory;
 

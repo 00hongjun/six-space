@@ -7,7 +7,7 @@ import com.sixshop.sixspace.user.domain.User;
 import com.sixshop.sixspace.user.infrastructure.UserRepository;
 import com.sixshop.sixspace.vacation.domain.DayOfMonthVacation;
 import com.sixshop.sixspace.vacation.domain.Vacation;
-import com.sixshop.sixspace.vacation.repository.VacationRepository;
+import com.sixshop.sixspace.vacation.repository.DayOfMonthVacationRepository;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -27,7 +27,7 @@ public class DayOfMonthVacationService {
     private static final int LUNCH_HOUR = 13;
     private static final int FINISH_WORK_HOUR = 18;
 
-    private final VacationRepository vacationRepository;
+    private final DayOfMonthVacationRepository dayOfMonthVacationRepository;
     private final UserRepository userRepository;
 
     public List<DayOfMonthVacation> getVacationsOfMonth(final int year, final int month) {
@@ -37,7 +37,7 @@ public class DayOfMonthVacationService {
         final List<String> userIds = vacationsOfMonth.stream()
                                                      .map(DayOfMonthVacation::getUserId)
                                                      .collect(Collectors.toList());
-        final List<User> users = userRepository.findUserByIdIn(userIds);
+        final List<User> users = userRepository.findAllByIdIn(userIds);
 
         for (User user : users) {
             vacationsOfMonth.forEach(
@@ -58,7 +58,7 @@ public class DayOfMonthVacationService {
                                                            .withHour(23)
                                                            .withMinute(59);
 
-        return vacationRepository.findAllByBetweenDates(startDayOfMonth, endDayOfMonth);
+        return dayOfMonthVacationRepository.findAllByBetweenDates(startDayOfMonth, endDayOfMonth);
     }
 
     private List<DayOfMonthVacation> filterVacationOfMonth(final int year, final int month,
