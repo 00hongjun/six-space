@@ -106,8 +106,7 @@ public class VacationService {
         return useHour;
     }
 
-    private boolean isInMonth(final LocalDate currentDate, final LocalDate startDayOfMonth,
-        final LocalDate endDayOfMonth) {
+    private boolean isInMonth(final LocalDate currentDate, final LocalDate startDayOfMonth, final LocalDate endDayOfMonth) {
         return !currentDate.isBefore(startDayOfMonth) && !currentDate.isAfter(endDayOfMonth);
     }
 
@@ -130,8 +129,7 @@ public class VacationService {
                                         .stream()
                                         .mapToInt(DayOfMonthVacation::getUseHour)
                                         .reduce(Integer::sum)
-                                        .orElseThrow(
-                                            () -> new IllegalArgumentException("사용한 휴가 시간을 계산할 수 없습니다. 관리자에게 문의하세요"));
+                                        .orElseThrow(() -> new IllegalArgumentException("사용한 휴가 시간을 계산할 수 없습니다. 관리자에게 문의하세요"));
 
                 result.add(new DayOfMonthVacation(userId, day, todayUseHour));
             }
