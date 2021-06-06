@@ -22,7 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class VacationService {
+public class DayOfMonthVacationService {
 
     private static final int LUNCH_HOUR = 13;
     private static final int FINISH_WORK_HOUR = 18;
