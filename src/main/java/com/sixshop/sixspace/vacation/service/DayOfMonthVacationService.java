@@ -37,7 +37,7 @@ public class DayOfMonthVacationService {
         final List<String> userIds = vacationsOfMonth.stream()
                                                      .map(DayOfMonthVacation::getUserId)
                                                      .collect(Collectors.toList());
-        final List<User> users = userRepository.findUserByIds(userIds);
+        final List<User> users = userRepository.findUserByIdIn(userIds);
 
         for (User user : users) {
             vacationsOfMonth.forEach(
