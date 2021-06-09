@@ -1,6 +1,9 @@
 package com.sixshop.sixspace.vacation.domain;
 
 import java.time.LocalDateTime;
+import javax.persistence.AttributeOverride;
+import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -23,9 +26,21 @@ public class Vacation {
     private String userId;
     @Enumerated(EnumType.STRING)
     private VacationType type;
-    private LocalDateTime startDateTime;
-    private LocalDateTime endDateTime;
+    @Embedded
+    @AttributeOverride(name = "time", column = @Column(name = "startDateTime"))
+    private VacationLocalDateTime startDateTime;
+    @Embedded
+    @AttributeOverride(name = "time", column = @Column(name = "endDateTime"))
+    private VacationLocalDateTime endDateTime;
     private Integer useHour;
     private String reason;
+
+    public LocalDateTime getStartDateTimeValue() {
+        return startDateTime.getTime();
+    }
+
+    public LocalDateTime getEndDateTimeValue() {
+        return endDateTime.getTime();
+    }
 
 }
