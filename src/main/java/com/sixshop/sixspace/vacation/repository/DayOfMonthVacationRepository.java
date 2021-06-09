@@ -12,11 +12,26 @@ import org.springframework.stereotype.Repository;
 
 @RequiredArgsConstructor
 @Repository
-public class VacationRepository2 {
+public class DayOfMonthVacationRepository {
 
     private final JPAQueryFactory queryFactory;
 
-    public Vacations findAllByBetweenDates(LocalDateTime start, final LocalDateTime end) {
+//    @Query(value = "SELECT v FROM Vacation v WHERE v.startDateTime BETWEEN :start AND :end "
+//        + "OR v.endDateTime BETWEEN :start AND :end "
+//        + "ORDER BY v.startDateTime")
+//    List<Vacation> findAllByBetweenDates(@Param("start") final LocalDateTime start, @Param("end") final LocalDateTime end);
+
+    public List<Vacation> findAllByBetweenDates(LocalDateTime start, final LocalDateTime end) {
+        return queryFactory
+            .select(vacation)
+            .from(vacation)
+            .where(vacation.startDateTime.between(start, end)
+                                         .or(vacation.endDateTime.between(start, end)))
+            .orderBy(vacation.startDateTime.asc())
+            .fetch();
+    }
+
+    public Vacations findAllByBetweenDates2(LocalDateTime start, final LocalDateTime end) {
         List<Vacation> fetch = queryFactory
             .select(vacation)
             .from(vacation)
@@ -27,5 +42,6 @@ public class VacationRepository2 {
 
         return Vacations.of(fetch);
     }
+
 
 }
