@@ -35,8 +35,8 @@ public class DayOfMonthVacationService {
         final List<DayOfMonthVacation> filtered = filterVacationOfMonth(year, month, vacations);
         final List<DayOfMonthVacation> vacationsOfMonth = distinctDayVacation(filtered);
         final List<String> userIds = vacationsOfMonth.stream()
-                                                     .map(DayOfMonthVacation::getUserId)
-                                                     .collect(Collectors.toList());
+            .map(DayOfMonthVacation::getUserId)
+            .collect(Collectors.toList());
         final List<User> users = userRepository.findAllByIdIn(userIds);
 
         for (User user : users) {
@@ -55,8 +55,8 @@ public class DayOfMonthVacationService {
     public List<Vacation> findAllByBetweenDates(final int year, final int month) {
         final LocalDateTime startDayOfMonth = LocalDateTime.of(year, month, 1, 0, 0);
         final LocalDateTime endDayOfMonth = startDayOfMonth.with(lastDayOfMonth())
-                                                           .withHour(23)
-                                                           .withMinute(59);
+            .withHour(23)
+            .withMinute(59);
 
         return dayOfMonthVacationRepository.findAllByBetweenDates(startDayOfMonth, endDayOfMonth);
     }
@@ -68,11 +68,11 @@ public class DayOfMonthVacationService {
         final List<DayOfMonthVacation> filtered = new ArrayList<>();
 
         for (final Vacation vacation : vacations) {
-            final LocalDate from = vacation.getStartDateTime().toLocalDate();
-            final LocalDate to = vacation.getEndDateTime().toLocalDate();
+            final LocalDate from = vacation.getStartDateTimeValue().toLocalDate();
+            final LocalDate to = vacation.getEndDateTimeValue().toLocalDate();
 
             int totalUseHour = vacation.getUseHour();
-            int startHour = vacation.getStartDateTime().getHour();
+            int startHour = vacation.getStartDateTimeValue().getHour();
 
             LocalDate cursor = from;
             while (!cursor.isAfter(to)) {
@@ -106,24 +106,25 @@ public class DayOfMonthVacationService {
         return useHour;
     }
 
-    private boolean isInMonth(final LocalDate currentDate, final LocalDate startDayOfMonth, final LocalDate endDayOfMonth) {
+    private boolean isInMonth(final LocalDate currentDate, final LocalDate startDayOfMonth,
+        final LocalDate endDayOfMonth) {
         return !currentDate.isBefore(startDayOfMonth) && !currentDate.isAfter(endDayOfMonth);
     }
 
     private List<DayOfMonthVacation> distinctDayVacation(final List<DayOfMonthVacation> filtered) {
         final Map<Integer, Map<String, List<DayOfMonthVacation>>> dayGroups = filtered.stream()
-                                                                                      .collect(groupingBy(DayOfMonthVacation::getDay
-                                                                                          , groupingBy(DayOfMonthVacation::getUserId)
-                                                                                      ));
+            .collect(groupingBy(DayOfMonthVacation::getDay
+                , groupingBy(DayOfMonthVacation::getUserId)
+            ));
 
         List<DayOfMonthVacation> result = new ArrayList<>();
         for (Map.Entry<Integer, Map<String, List<DayOfMonthVacation>>> dayEntry : dayGroups.entrySet()) {
             for (Map.Entry<String, List<DayOfMonthVacation>> userEntry : dayEntry.getValue().entrySet()) {
                 int todayUseHour = userEntry.getValue()
-                                        .stream()
-                                        .mapToInt(DayOfMonthVacation::getUseHour)
-                                        .reduce(Integer::sum)
-                                        .orElseThrow(() -> new IllegalArgumentException("사용한 휴가 시간을 계산할 수 없습니다. 관리자에게 문의하세요"));
+                    .stream()
+                    .mapToInt(DayOfMonthVacation::getUseHour)
+                    .reduce(Integer::sum)
+                    .orElseThrow(() -> new IllegalArgumentException("사용한 휴가 시간을 계산할 수 없습니다. 관리자에게 문의하세요"));
 
                 result.add(new DayOfMonthVacation(userEntry.getKey(), dayEntry.getKey(), todayUseHour));
             }
