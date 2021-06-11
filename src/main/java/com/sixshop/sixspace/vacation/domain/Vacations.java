@@ -15,7 +15,7 @@ import lombok.Getter;
 @Getter
 public class Vacations {
 
-    final List<Vacation> vacations;
+    private final List<Vacation> vacations;
 
     private Vacations(List<Vacation> vacations) {
         this.vacations = Collections.unmodifiableList(vacations);
