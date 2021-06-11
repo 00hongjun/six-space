@@ -68,11 +68,11 @@ public class DayOfMonthVacationService {
         final List<DayOfMonthVacation> filtered = new ArrayList<>();
 
         for (final Vacation vacation : vacations) {
-            final LocalDate from = vacation.getStartDateTime().toLocalDate();
-            final LocalDate to = vacation.getEndDateTime().toLocalDate();
+            final LocalDate from = vacation.getStartDateTimeValue().toLocalDate();
+            final LocalDate to = vacation.getEndDateTimeValue().toLocalDate();
 
             int totalUseHour = vacation.getUseHour();
-            int startHour = vacation.getStartDateTime().getHour();
+            int startHour = vacation.getStartDateTimeValue().getHour();
 
             LocalDate cursor = from;
             while (!cursor.isAfter(to)) {
@@ -106,7 +106,8 @@ public class DayOfMonthVacationService {
         return useHour;
     }
 
-    private boolean isInMonth(final LocalDate currentDate, final LocalDate startDayOfMonth, final LocalDate endDayOfMonth) {
+    private boolean isInMonth(final LocalDate currentDate, final LocalDate startDayOfMonth,
+        final LocalDate endDayOfMonth) {
         return !currentDate.isBefore(startDayOfMonth) && !currentDate.isAfter(endDayOfMonth);
     }
 

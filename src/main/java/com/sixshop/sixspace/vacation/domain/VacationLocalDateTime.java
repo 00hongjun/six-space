@@ -3,12 +3,17 @@ package com.sixshop.sixspace.vacation.domain;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import javax.persistence.Embeddable;
+import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+@Embeddable
 @EqualsAndHashCode
 @ToString
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class VacationLocalDateTime {
 
     private static final int STANDARD_OF_MINUTE = 10;
@@ -17,7 +22,7 @@ public class VacationLocalDateTime {
     private static final LocalTime LEAVE_OFFICE_TIME = LocalTime.of(18, 0);
 
     @Getter
-    private final LocalDateTime time;
+    private LocalDateTime time;
 
     private VacationLocalDateTime(LocalDateTime time) {
         this.time = time;
