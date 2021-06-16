@@ -5,11 +5,14 @@ import static java.util.stream.Collectors.groupingBy;
 
 import com.sixshop.sixspace.user.domain.User;
 import com.sixshop.sixspace.user.infrastructure.UserRepository;
-import com.sixshop.sixspace.vacation.domain.DayOfMonthVacation;
 import com.sixshop.sixspace.vacation.domain.Vacation;
+import com.sixshop.sixspace.vacation.domain.VacationLocalDateTime;
+import com.sixshop.sixspace.vacation.presentation.dto.DayOfMonthVacation;
+import com.sixshop.sixspace.vacation.presentation.dto.DayOfMonthVacationResponse;
 import com.sixshop.sixspace.vacation.repository.DayOfMonthVacationRepository;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -30,25 +33,12 @@ public class DayOfMonthVacationService {
     private final DayOfMonthVacationRepository dayOfMonthVacationRepository;
     private final UserRepository userRepository;
 
-    public List<DayOfMonthVacation> getVacationsOfMonth(final int year, final int month) {
+    public DayOfMonthVacationResponse getVacationsOfMonth(final int year, final int month) {
         final List<Vacation> vacations = findAllByBetweenDates(year, month);
-        final List<DayOfMonthVacation> filtered = filterVacationOfMonth(year, month, vacations);
-        final List<DayOfMonthVacation> vacationsOfMonth = distinctDayVacation(filtered);
-        final List<String> userIds = vacationsOfMonth.stream()
-                                                     .map(DayOfMonthVacation::getUserId)
-                                                     .collect(Collectors.toList());
-        final List<User> users = userRepository.findAllByIdIn(userIds);
-
-        for (User user : users) {
-            vacationsOfMonth.forEach(
-                filteredVacation -> {
-                    if (filteredVacation.isMine(user.getId())) {
-                        filteredVacation.setUserName(user.getName());
-                    }
-                }
-            );
-        }
-        return vacationsOfMonth;
+        final List<Vacation> perDayVacations = analyzePerDayVacation(year, month, vacations);
+        final List<DayOfMonthVacation> vacationsOfMonth = distinctDayVacation(perDayVacations);
+        setUserNames(vacationsOfMonth);
+        return new DayOfMonthVacationResponse(vacationsOfMonth);
     }
 
     @Transactional(readOnly = true)
@@ -61,11 +51,10 @@ public class DayOfMonthVacationService {
         return dayOfMonthVacationRepository.findAllByBetweenDates(startDayOfMonth, endDayOfMonth);
     }
 
-    private List<DayOfMonthVacation> filterVacationOfMonth(final int year, final int month,
-        final List<Vacation> vacations) {
+    private List<Vacation> analyzePerDayVacation(final int year, final int month, final List<Vacation> vacations) {
         final LocalDate startDayOfMonth = LocalDate.of(year, month, 1);
         final LocalDate endDayOfMonth = startDayOfMonth.with(lastDayOfMonth());
-        final List<DayOfMonthVacation> filtered = new ArrayList<>();
+        final List<Vacation> analyzedVacations = new ArrayList<>();
 
         for (final Vacation vacation : vacations) {
             final LocalDate from = vacation.getStartDateTimeValue().toLocalDate();
@@ -78,7 +67,9 @@ public class DayOfMonthVacationService {
             while (!cursor.isAfter(to)) {
                 int use = getUseHour(startHour, totalUseHour);
                 if (isInMonth(cursor, startDayOfMonth, endDayOfMonth)) {
-                    filtered.add(new DayOfMonthVacation(vacation.getUserId(), cursor.getDayOfMonth(), use));
+                    final VacationLocalDateTime dayStartTime = VacationLocalDateTime.of(cursor, LocalTime.of(startHour, 0));
+                    final VacationLocalDateTime dayEndTime = VacationLocalDateTime.of(cursor, LocalTime.of(startHour, 0).plusHours(use));
+                    analyzedVacations.add(new Vacation(vacation.getUserId(), dayStartTime, dayEndTime, use));
                 }
 
                 cursor = cursor.plusDays(1);
@@ -91,7 +82,7 @@ public class DayOfMonthVacationService {
                 throw new RuntimeException("일 별 휴가를 계산할 수 없습니다. 관리자에게 문의하세요");
             }
         }
-        return filtered;
+        return analyzedVacations;
     }
 
     private int getUseHour(final int startHour, final int totalUseHour) {
@@ -111,24 +102,43 @@ public class DayOfMonthVacationService {
         return !currentDate.isBefore(startDayOfMonth) && !currentDate.isAfter(endDayOfMonth);
     }
 
-    private List<DayOfMonthVacation> distinctDayVacation(final List<DayOfMonthVacation> filtered) {
-        final Map<Integer, Map<String, List<DayOfMonthVacation>>> dayGroups = filtered.stream()
-                                                                                      .collect(groupingBy(DayOfMonthVacation::getDay
-                                                                                          , groupingBy(DayOfMonthVacation::getUserId)
-                                                                                      ));
+    private List<DayOfMonthVacation> distinctDayVacation(final List<Vacation> perDayVacations) {
+        final Map<Integer, Map<String, List<Vacation>>> dayGroups = perDayVacations.stream()
+                                                                                   .collect(groupingBy(vacation -> vacation.getStartDateTimeValue().getDayOfMonth()
+                                                                                       , groupingBy(Vacation::getUserId))
+                                                                                   );
 
         List<DayOfMonthVacation> result = new ArrayList<>();
-        for (Map.Entry<Integer, Map<String, List<DayOfMonthVacation>>> dayEntry : dayGroups.entrySet()) {
-            for (Map.Entry<String, List<DayOfMonthVacation>> userEntry : dayEntry.getValue().entrySet()) {
+        for (Map.Entry<Integer, Map<String, List<Vacation>>> dayEntry : dayGroups.entrySet()) {
+            for (Map.Entry<String, List<Vacation>> userEntry : dayEntry.getValue().entrySet()) {
                 int todayUseHour = userEntry.getValue()
-                                        .stream()
-                                        .mapToInt(DayOfMonthVacation::getUseHour)
-                                        .reduce(Integer::sum)
-                                        .orElseThrow(() -> new IllegalArgumentException("사용한 휴가 시간을 계산할 수 없습니다. 관리자에게 문의하세요"));
+                                            .stream()
+                                            .mapToInt(Vacation::getUseHour)
+                                            .reduce(Integer::sum)
+                                            .orElseThrow(() -> new IllegalArgumentException("사용한 휴가 시간을 계산할 수 없습니다. 관리자에게 문의하세요"));
 
                 result.add(new DayOfMonthVacation(userEntry.getKey(), dayEntry.getKey(), todayUseHour));
             }
         }
         return result;
+    }
+
+    private void setUserNames(final List<DayOfMonthVacation> vacationsOfMonth) {
+        final List<String> userIds = vacationsOfMonth.stream()
+                                                     .map(DayOfMonthVacation::getUserId)
+                                                     .distinct()
+                                                     .collect(Collectors.toList());
+
+        final List<User> users = userRepository.findAllByIdIn(userIds);
+
+        for (User user : users) {
+            vacationsOfMonth.forEach(
+                vacation -> {
+                    if (vacation.isMine(user.getId())) {
+                        vacation.setUserName(user.getName());
+                    }
+                }
+            );
+        }
     }
 }

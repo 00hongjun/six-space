@@ -35,6 +35,13 @@ public class Vacation {
     private Integer useHour;
     private String reason;
 
+    public Vacation(final String userId, final VacationLocalDateTime startDateTime, final VacationLocalDateTime endDateTime, final Integer useHour) {
+        this.userId = userId;
+        this.startDateTime = startDateTime;
+        this.endDateTime = endDateTime;
+        this.useHour = useHour;
+    }
+
     public LocalDateTime getStartDateTimeValue() {
         return startDateTime.getTime();
     }

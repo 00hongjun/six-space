@@ -27,9 +27,10 @@ INSERT INTO vacation (id, start_date_time, end_date_time, type, reason, use_hour
 VALUES (16, '2021-06-29 09:00', '2021-07-02 18:00', 'BASIC', '개인정비6', 32, 3);
 
 INSERT INTO vacation (id, start_date_time, end_date_time, type, reason, use_hour, user_id)
-VALUES (17, '2021-06-01 09:00', '2021-06-01 10:00', 'BASIC', '개인정비7', 1, 3);
+VALUES (17, '2021-06-04 09:00', '2021-06-04 10:00', 'BASIC', '개인정비7', 1, 3);
 
 INSERT INTO vacation (id, start_date_time, end_date_time, type, reason, use_hour, user_id)
-VALUES (18, '2021-06-11 12:00', '2021-06-12 11:00', 'BASIC', '개인정비8', 7, 4);
+VALUES (18, '2021-06-04 10:00', '2021-06-04 11:00', 'BASIC', '개인정비8', 1, 3);
 
-
+INSERT INTO vacation (id, start_date_time, end_date_time, type, reason, use_hour, user_id)
+VALUES (19, '2021-06-11 12:00', '2021-06-12 11:00', 'BASIC', '개인정비9', 7, 4);
