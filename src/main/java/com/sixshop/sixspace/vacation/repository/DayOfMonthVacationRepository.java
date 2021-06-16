@@ -4,6 +4,7 @@ import static com.sixshop.sixspace.vacation.domain.QVacation.vacation;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.sixshop.sixspace.vacation.domain.Vacation;
+import com.sixshop.sixspace.vacation.domain.Vacations;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
