@@ -22,7 +22,6 @@ class UserRepositoryTest {
     UserRepository userRepository;
 
     @DisplayName("유저 저장")
-    @Transactional
     @Test
     void save() {
         // given
