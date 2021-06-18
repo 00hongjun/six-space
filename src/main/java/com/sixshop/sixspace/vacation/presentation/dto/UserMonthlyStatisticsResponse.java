@@ -1,6 +1,5 @@
 package com.sixshop.sixspace.vacation.presentation.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sixshop.sixspace.user.domain.User;
 import com.sixshop.sixspace.vacation.domain.Vacations;
 import java.util.Comparator;
@@ -17,7 +16,7 @@ public class UserMonthlyStatisticsResponse {
 
 
     @Getter
-    static class VacationInfo {
+    public static class VacationInfo {
 
         private Integer total;
         private Integer use;
