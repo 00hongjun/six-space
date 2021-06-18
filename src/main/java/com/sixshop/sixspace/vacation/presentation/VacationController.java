@@ -1,7 +1,10 @@
 package com.sixshop.sixspace.vacation.presentation;
 
+import com.sixshop.sixspace.vacation.presentation.dto.ApiResponse;
 import com.sixshop.sixspace.vacation.presentation.dto.DayOfMonthVacationResponse;
+import com.sixshop.sixspace.vacation.presentation.dto.UserMonthlyStatisticsResponse;
 import com.sixshop.sixspace.vacation.service.DayOfMonthVacationService;
+import com.sixshop.sixspace.vacation.service.VacationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
