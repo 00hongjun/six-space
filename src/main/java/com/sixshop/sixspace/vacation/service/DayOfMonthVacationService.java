@@ -45,8 +45,8 @@ public class DayOfMonthVacationService {
     public List<Vacation> findAllByBetweenDates(final int year, final int month) {
         final LocalDateTime startDayOfMonth = LocalDateTime.of(year, month, 1, 0, 0);
         final LocalDateTime endDayOfMonth = startDayOfMonth.with(lastDayOfMonth())
-                                                           .withHour(23)
-                                                           .withMinute(59);
+            .withHour(23)
+            .withMinute(59);
 
         return dayOfMonthVacationRepository.findAllByBetweenDates(startDayOfMonth, endDayOfMonth);
     }
