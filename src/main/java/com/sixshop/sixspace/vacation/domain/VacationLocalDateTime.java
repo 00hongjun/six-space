@@ -62,7 +62,7 @@ public class VacationLocalDateTime {
     }
 
     private VacationLocalDateTime overTomorrow(int hours) {
-        LocalDate localDate = time.plusDays(hours / DAY_VACATION_MIN_HOUR)
+        LocalDate localDate = time.plusDays((hours / DAY_VACATION_MIN_HOUR) - 1)
             .toLocalDate();
 
         return VacationLocalDateTime.of(localDate, LEAVE_OFFICE_TIME);

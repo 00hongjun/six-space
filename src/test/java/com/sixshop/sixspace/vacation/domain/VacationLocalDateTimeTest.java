@@ -19,14 +19,14 @@ class VacationLocalDateTimeTest {
     private static final LocalDate localDate = LocalDate.of(2021, 5, 22);
     private static final LocalTime localTime = LocalTime.of(13, 0);
 
-    private Stream<Arguments> generateDayVacation() {
+    private static Stream<Arguments> generateDayVacation() {
         return Stream.of(
-            Arguments.of(1, 8),
-            Arguments.of(2, 16),
-            Arguments.of(3, 24),
-            Arguments.of(4, 32),
-            Arguments.of(5, 40),
-            Arguments.of(10, 80)
+            Arguments.of(0, 8),
+            Arguments.of(1, 16),
+            Arguments.of(2, 24),
+            Arguments.of(3, 32),
+            Arguments.of(4, 40),
+            Arguments.of(9, 80)
         );
     }
 
@@ -200,6 +200,7 @@ class VacationLocalDateTimeTest {
 
     @DisplayName("시간 더하고 비교하기 - 연차")
     @MethodSource("generateDayVacation")
+    @ParameterizedTest
     void plusHours_over8(int day, int hour) {
         // given
         LocalDateTime start = LocalDateTime.of(localDate, LocalTime.of(9, 0));
