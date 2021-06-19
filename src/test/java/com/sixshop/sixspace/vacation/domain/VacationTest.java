@@ -13,8 +13,8 @@ class VacationTest {
     @Test
     void isDailyVacation() {
         // given
-        VacationLocalDateTime startTime = VacationLocalDateTime.of(LocalDateTime.of(2121, 06, 19, 9, 0));
-        VacationLocalDateTime endTime = VacationLocalDateTime.of(LocalDateTime.of(2121, 06, 19, 18, 0));
+        VacationLocalDateTime startTime = VacationLocalDateTime.of(LocalDateTime.of(2021, 06, 19, 9, 0));
+        VacationLocalDateTime endTime = VacationLocalDateTime.of(LocalDateTime.of(2021, 06, 19, 18, 0));
 
         // when
         Vacation vacation = new Vacation("A", startTime, endTime, 8);
