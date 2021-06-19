@@ -4,8 +4,9 @@ import static com.sixshop.sixspace.vacation.domain.QVacation.vacation;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.sixshop.sixspace.vacation.domain.Vacation;
-import com.sixshop.sixspace.vacation.domain.Vacations;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -16,12 +17,22 @@ public class DayOfMonthVacationRepository {
 
     private final JPAQueryFactory queryFactory;
 
-    public List<Vacation> findAllByBetweenDates(LocalDateTime start, final LocalDateTime end) {
+    public List<Vacation> findAllByBetweenDates(LocalDateTime start, LocalDateTime end) {
         return queryFactory
             .select(vacation)
             .from(vacation)
             .where(vacation.startDateTime.time.between(start, end)
                 .or(vacation.endDateTime.time.between(start, end)))
+            .orderBy(vacation.startDateTime.time.asc())
+            .fetch();
+    }
+
+    public List<Vacation> findAllIncludeDay(LocalDate localDate) {
+        return queryFactory
+            .select(vacation)
+            .from(vacation)
+            .where(vacation.startDateTime.time.after(LocalDateTime.of(localDate, LocalTime.MIN))
+                .and(vacation.endDateTime.time.before(LocalDateTime.of(localDate, LocalTime.MAX))))
             .orderBy(vacation.startDateTime.time.asc())
             .fetch();
     }
