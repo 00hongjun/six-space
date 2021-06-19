@@ -8,7 +8,7 @@ import lombok.Getter;
 @Getter
 public class VacationResponse {
 
-    private Integer id;
+    private Integer vacationId;
     private String userId;
     private VacationType type;
     private LocalDateTime startDate;
@@ -17,7 +17,7 @@ public class VacationResponse {
     private String reason;
 
     public VacationResponse(Vacation vacation) {
-        this.id = vacation.getId();
+        this.vacationId = vacation.getId();
         this.userId = vacation.getUserId();
         this.startDate = vacation.getStartDateTimeValue();
         this.endDate = vacation.getEndDateTimeValue();
