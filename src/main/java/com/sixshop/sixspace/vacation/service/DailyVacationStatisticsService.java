@@ -5,6 +5,7 @@ import com.sixshop.sixspace.vacation.domain.Vacations;
 import com.sixshop.sixspace.vacation.presentation.dto.VacationResponse;
 import com.sixshop.sixspace.vacation.repository.DayOfMonthVacationRepository;
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -35,6 +36,8 @@ public class DailyVacationStatisticsService {
         List<VacationResponse> collect = Stream
             .concat(useDaily.getVacations().stream(), useDailyHour.getVacations().stream())
             .map(VacationResponse::new)
+            .sorted(Comparator.comparing(VacationResponse::getStartDate)
+            .thenComparing(VacationResponse::getEndDate))
             .collect(Collectors.toList());
 
         return collect;
