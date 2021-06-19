@@ -82,4 +82,12 @@ public class VacationLocalDateTime {
         return plusHour - leaveHour;
     }
 
+    public Boolean isStartGoOfficeTime() {
+        return GO_OFFICE_TIME.equals(time.toLocalTime());
+    }
+
+    public Boolean isEndLeaveOfficeTime() {
+        return LEAVE_OFFICE_TIME.equals(time.toLocalTime());
+    }
+
 }
