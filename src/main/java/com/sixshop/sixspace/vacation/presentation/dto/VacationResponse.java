@@ -1,5 +1,7 @@
 package com.sixshop.sixspace.vacation.presentation.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.sixshop.sixspace.vacation.domain.Vacation;
 import com.sixshop.sixspace.vacation.domain.VacationType;
 import java.time.LocalDateTime;
@@ -11,6 +13,7 @@ public class VacationResponse {
 
     private Integer vacationId;
     private String userId;
+    @JsonInclude(Include.NON_EMPTY)
     @Setter
     private String userName;
     private VacationType type;

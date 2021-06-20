@@ -31,11 +31,9 @@ public class VacationController {
         return ResponseEntity.ok(vacationsOfMonth);
     }
 
-    @GetMapping("/users/{userId}/{year}/{month}")
+    @GetMapping("/users/{userId}")
     public ResponseEntity<ApiResponse> getUserMonthlyStatistics(
-        @PathVariable String userId,
-        @PathVariable int year,
-        @PathVariable int month) {
+        @PathVariable String userId) {
         UserMonthlyStatisticsResponse response = vacationService
             .generateUserMonthlyStatistics(userId);
         ApiResponse<UserMonthlyStatisticsResponse> result = new ApiResponse<>(
