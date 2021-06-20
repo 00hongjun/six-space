@@ -39,7 +39,7 @@ public class VacationController {
         @PathVariable int month) {
         UserMonthlyStatisticsResponse response = vacationService
             .generateUserMonthlyStatistics(userId);
-        ApiResponse<UserMonthlyStatisticsResponse> result = new ApiResponse<>(
+        ApiResponse<UserMonthlyStatisticsResponse> result = ApiResponse.SUCCESS(
             response);
         return ResponseEntity.ok(result);
     }

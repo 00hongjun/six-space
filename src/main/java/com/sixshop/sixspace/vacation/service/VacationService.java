@@ -3,6 +3,8 @@ package com.sixshop.sixspace.vacation.service;
 import static java.time.temporal.TemporalAdjusters.firstDayOfMonth;
 import static java.time.temporal.TemporalAdjusters.lastDayOfMonth;
 
+import com.sixshop.sixspace.exception.ErrorCode;
+import com.sixshop.sixspace.exception.ServiceException;
 import com.sixshop.sixspace.user.domain.User;
 import com.sixshop.sixspace.user.infrastructure.UserRepository;
 import com.sixshop.sixspace.vacation.domain.Vacation;
@@ -62,7 +64,7 @@ public class VacationService {
     public UserMonthlyStatisticsResponse generateUserMonthlyStatistics(String userId) {
         LocalDate now = LocalDate.now();
         User user = userRepository.findById(userId)
-            .orElseThrow(() -> new IllegalArgumentException("회원 조회 실패"));
+            .orElseThrow(() -> new ServiceException(ErrorCode.NOT_FOUND_USER));
         Vacations vacations = Vacations.of(dayOfMonthVacationRepository.findAllByUserId(userId));
 
         int weekUseVacationHour = vacations
