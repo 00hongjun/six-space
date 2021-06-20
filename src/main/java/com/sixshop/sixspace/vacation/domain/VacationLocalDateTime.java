@@ -17,7 +17,7 @@ import lombok.ToString;
 public class VacationLocalDateTime {
 
     private static final int STANDARD_OF_MINUTE = 10;
-    private static final int DAY_VACATION_MIN_HOUR = 8;
+    private static final int DAY_VACATION_HOUR = 8;
     private static final LocalTime GO_OFFICE_TIME = LocalTime.of(9, 0);
     private static final LocalTime LEAVE_OFFICE_TIME = LocalTime.of(18, 0);
 
@@ -44,7 +44,7 @@ public class VacationLocalDateTime {
     public VacationLocalDateTime plusHours(int hours) {
         validateOperandHour(hours);
 
-        if (hours < DAY_VACATION_MIN_HOUR) {
+        if (hours < DAY_VACATION_HOUR) {
             return VacationLocalDateTime.of(time.plusHours(hours));
         }
 
@@ -52,17 +52,17 @@ public class VacationLocalDateTime {
     }
 
     private void validateOperandHour(int hours) {
-        if (hours < DAY_VACATION_MIN_HOUR) {
+        if (hours < DAY_VACATION_HOUR) {
             return;
         }
 
-        if (hours % DAY_VACATION_MIN_HOUR != 0 || !GO_OFFICE_TIME.equals(time.toLocalTime())) {
+        if (hours % DAY_VACATION_HOUR != 0 || !GO_OFFICE_TIME.equals(time.toLocalTime())) {
             throw new IllegalArgumentException("연차 시간 설정 에러");
         }
     }
 
     private VacationLocalDateTime overTomorrow(int hours) {
-        LocalDate localDate = time.plusDays((hours / DAY_VACATION_MIN_HOUR) - 1)
+        LocalDate localDate = time.plusDays((hours / DAY_VACATION_HOUR) - 1)
             .toLocalDate();
 
         return VacationLocalDateTime.of(localDate, LEAVE_OFFICE_TIME);
