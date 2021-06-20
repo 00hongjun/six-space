@@ -1,5 +1,7 @@
 package com.sixshop.sixspace.vacation.service;
 
+import com.sixshop.sixspace.user.application.UserService;
+import com.sixshop.sixspace.user.domain.User;
 import com.sixshop.sixspace.vacation.domain.Vacation;
 import com.sixshop.sixspace.vacation.domain.Vacations;
 import com.sixshop.sixspace.vacation.presentation.dto.VacationResponse;
@@ -19,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class DailyVacationStatisticsService {
 
     private final DayOfMonthVacationRepository vacationRepository;
+    private final UserService userService;
 
     public List<Vacation> findDailyVacation(LocalDate localDate) {
         List<Vacation> allIncludeDay = vacationRepository.findAllIncludeDay(localDate);
@@ -26,8 +29,7 @@ public class DailyVacationStatisticsService {
         return allIncludeDay;
     }
 
-    public List<VacationResponse> compileDailyStatistics(int year, int month, int day) {
-        LocalDate localDate = LocalDate.of(year, month, day);
+    public List<VacationResponse> compileDailyVacations(LocalDate localDate) {
         Vacations vacations = Vacations.of(findDailyVacation(localDate));
 
         Vacations useDaily = vacations.getUseDaily(localDate);
@@ -37,10 +39,28 @@ public class DailyVacationStatisticsService {
             .concat(useDaily.getVacations().stream(), useDailyHour.getVacations().stream())
             .map(VacationResponse::new)
             .sorted(Comparator.comparing(VacationResponse::getStartDate)
-            .thenComparing(VacationResponse::getEndDate))
+                .thenComparing(VacationResponse::getEndDate))
             .collect(Collectors.toList());
 
         return collect;
+    }
+
+    public List<VacationResponse> compileDailyVacations(int year, int month, int day) {
+        List<VacationResponse> vacationResponses = compileDailyVacations(LocalDate.of(year, month, day));
+        List<String> userIds = vacationResponses.stream()
+            .map(VacationResponse::getUserId)
+            .collect(Collectors.toList());
+        List<User> users = userService.findUserByIds(userIds);
+
+        for (VacationResponse vacationResponse : vacationResponses) {
+            for (User user : users) {
+                if (vacationResponse.getUserId().equals(user.getId())) {
+                    vacationResponse.setUserName(user.getName());
+                }
+            }
+        }
+
+        return vacationResponses;
     }
 
 }

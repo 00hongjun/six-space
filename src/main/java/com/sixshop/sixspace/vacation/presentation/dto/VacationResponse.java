@@ -4,12 +4,15 @@ import com.sixshop.sixspace.vacation.domain.Vacation;
 import com.sixshop.sixspace.vacation.domain.VacationType;
 import java.time.LocalDateTime;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 public class VacationResponse {
 
     private Integer vacationId;
     private String userId;
+    @Setter
+    private String userName;
     private VacationType type;
     private LocalDateTime startDate;
     private LocalDateTime endDate;

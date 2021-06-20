@@ -49,7 +49,7 @@ public class VacationController {
         @PathVariable int month,
         @PathVariable int day) {
 
-        List<VacationResponse> find = dailyVacationStatisticsService.compileDailyStatistics(year, month, day);
+        List<VacationResponse> find = dailyVacationStatisticsService.compileDailyVacations(year, month, day);
         return ResponseEntity.ok(new ApiResponse<>(find));
     }
 
