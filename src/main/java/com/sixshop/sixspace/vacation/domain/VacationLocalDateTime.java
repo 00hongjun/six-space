@@ -48,7 +48,7 @@ public class VacationLocalDateTime {
             return VacationLocalDateTime.of(time.plusHours(hours));
         }
 
-        return overTomorrow(hours);
+        return useDayVacation(hours);
     }
 
     private void validateOperandHour(int hours) {
@@ -61,7 +61,7 @@ public class VacationLocalDateTime {
         }
     }
 
-    private VacationLocalDateTime overTomorrow(int hours) {
+    private VacationLocalDateTime useDayVacation(int hours) {
         LocalDate localDate = time.plusDays((hours / DAY_VACATION_HOUR) - 1)
             .toLocalDate();
 
