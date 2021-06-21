@@ -67,7 +67,7 @@ public class VacationController {
         @PathVariable int day) {
 
         List<VacationResponse> find = dailyVacationStatisticsService.prepareDailyVacation(year, month, day);
-        return ResponseEntity.ok(new ApiResponse<>(find));
+        return ResponseEntity.ok(ApiResponse.SUCCESS(find));
     }
 
 }
