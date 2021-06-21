@@ -4,7 +4,6 @@ import com.sixshop.sixspace.user.presentation.dto.UserCreateRequest;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
@@ -44,12 +43,5 @@ public class User {
         result.totalVacationTime = 100;
 
         return result;
-    }
-
-    public List<String> getRoleNames() {
-        return roles.stream()
-            .map(Role::getRole)
-            .map(v -> v.name())
-            .collect(Collectors.toList());
     }
 }

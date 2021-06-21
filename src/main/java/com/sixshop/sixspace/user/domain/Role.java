@@ -10,7 +10,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import lombok.AccessLevel;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
@@ -20,7 +19,6 @@ public class Role {
     @Id
     @GeneratedValue
     private Integer id;
-    @Getter
     @Enumerated(EnumType.STRING)
     private RoleType role;
 
