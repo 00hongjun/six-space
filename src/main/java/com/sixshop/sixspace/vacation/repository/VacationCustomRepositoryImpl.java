@@ -4,7 +4,9 @@ import static com.sixshop.sixspace.vacation.domain.QVacation.vacation;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.sixshop.sixspace.vacation.domain.Vacation;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 import lombok.Builder.ObtainVia;
@@ -30,6 +32,16 @@ public class VacationCustomRepositoryImpl implements VacationCustomRepository{
             .select(vacation)
             .from(vacation)
             .where(vacation.userId.eq(userId))
+            .orderBy(vacation.startDateTime.time.asc())
+            .fetch();
+    }
+
+    public List<Vacation> findAllIncludeDay(LocalDate localDate) {
+        return queryFactory
+            .select(vacation)
+            .from(vacation)
+            .where(vacation.startDateTime.time.after(LocalDateTime.of(localDate, LocalTime.MIN))
+                .and(vacation.endDateTime.time.before(LocalDateTime.of(localDate, LocalTime.MAX))))
             .orderBy(vacation.startDateTime.time.asc())
             .fetch();
     }
