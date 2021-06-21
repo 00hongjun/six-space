@@ -6,9 +6,12 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 class VacationLocalDateTimeTest {
@@ -16,9 +19,20 @@ class VacationLocalDateTimeTest {
     private static final LocalDate localDate = LocalDate.of(2021, 5, 22);
     private static final LocalTime localTime = LocalTime.of(13, 0);
 
+    private static Stream<Arguments> generateDayVacation() {
+        return Stream.of(
+            Arguments.of(0, 8),
+            Arguments.of(1, 16),
+            Arguments.of(2, 24),
+            Arguments.of(3, 32),
+            Arguments.of(4, 40),
+            Arguments.of(9, 80)
+        );
+    }
+
     @DisplayName("주입 받은 LocalDateTime 과 동일한 시간을 관리")
     @Test
-    void of() {
+    void of_dateTime() {
         // given
         LocalDateTime compare = LocalDateTime.of(localDate, localTime);
 
@@ -27,6 +41,38 @@ class VacationLocalDateTimeTest {
 
         // then
         assertThat(target.getTime())
+            .isEqualTo(compare);
+    }
+
+    @DisplayName("주입 받은 LocalDate, LocalTime 과 동일한 시간을 관리")
+    @Test
+    void of_date_time() {
+        // given
+        LocalDateTime compare = LocalDateTime.of(localDate, localTime);
+
+        // when
+        VacationLocalDateTime target = VacationLocalDateTime.of(localDate, localTime);
+
+        // then
+        assertThat(target.getTime())
+            .isEqualTo(compare);
+    }
+
+    @DisplayName("of()는 parm 타입 관계없이 동일")
+    @Test
+    void of() {
+        // given
+        LocalDateTime compare = LocalDateTime.of(localDate, localTime);
+
+        // when
+        VacationLocalDateTime target1 = VacationLocalDateTime.of(localDate, localTime);
+        VacationLocalDateTime target2 = VacationLocalDateTime.of(compare);
+
+        // then
+        assertThat(target1).isEqualTo(target2);
+        assertThat(target1.getTime())
+            .isEqualTo(compare);
+        assertThat(target2.getTime())
             .isEqualTo(compare);
     }
 
@@ -73,6 +119,18 @@ class VacationLocalDateTimeTest {
         VacationLocalDateTime.of(localDate, localTime);
     }
 
+    @DisplayName("10분 단위로 설정 가능 - 성공")
+    @ParameterizedTest
+    @ValueSource(ints = {0, 10, 20, 30, 40, 50})
+    void of_minute_success2(int minute) {
+        // given
+        LocalTime localTime = LocalTime.of(9, minute);
+        LocalDateTime localDateTime = LocalDateTime.of(localDate, localTime);
+
+        // then
+        VacationLocalDateTime.of(localDateTime);
+    }
+
     @DisplayName("10분 단위로 설정 가능 - 실패")
     @ParameterizedTest
     @ValueSource(ints = {1, 5, 9, 11, 21, 29, 31, 59})
@@ -86,68 +144,75 @@ class VacationLocalDateTimeTest {
             .hasMessage("10분 단위로 설정 가능");
     }
 
-    @DisplayName("시간 더하고 비교하기")
-    @Test
-    void plusHours() {
+    @DisplayName("10분 단위로 설정 가능 - 실패")
+    @ParameterizedTest
+    @ValueSource(ints = {1, 5, 9, 11, 21, 29, 31, 59})
+    void of_minute_fail2(int minute) {
         // given
+        LocalTime localTime = LocalTime.of(9, minute);
         LocalDateTime localDateTime = LocalDateTime.of(localDate, localTime);
-        LocalDateTime plus1 = localDateTime.plusHours(1);
+
+        // then
+        assertThatThrownBy(() -> VacationLocalDateTime.of(localDateTime))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("10분 단위로 설정 가능");
+    }
+
+    @DisplayName("8시간 이상 사용할 경우 8의 배수 아니면 실패")
+    @ParameterizedTest
+    @ValueSource(ints = {9, 10, 11, 15, 17, 20, 23, 25, 100})
+    void validateOperandHour_userHour(int hour) {
+        // given
+        VacationLocalDateTime vacation = VacationLocalDateTime.of(localDate, localTime);
+
+        // then
+        assertThatThrownBy(() -> vacation.plusHours(hour))
+            .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @DisplayName("8시간 이상 사용할 경우 시작 시간이 09:00 아니면 실패")
+    @Test
+    void validateOperandHour_startTime() {
+        // given
+        VacationLocalDateTime vacation = VacationLocalDateTime.of(localDate, localTime);
+
+        // then
+        assertThatThrownBy(() -> vacation.plusHours(8))
+            .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @DisplayName("시간 더하고 비교하기 - 시차")
+    @ParameterizedTest
+    @ValueSource(ints = {1, 2, 3, 4, 5, 6, 7})
+    void plusHours_under8(int hour) {
+        // given
+        LocalDateTime start = LocalDateTime.of(localDate, localTime);
+        LocalDateTime plus = start.plusHours(hour);
 
         // when
-        VacationLocalDateTime target1 = VacationLocalDateTime.of(plus1);
-        VacationLocalDateTime target2 = VacationLocalDateTime.of(localDateTime).plusHours(1);
+        VacationLocalDateTime target1 = VacationLocalDateTime.of(start).plusHours(hour);
+        VacationLocalDateTime target2 = VacationLocalDateTime.of(plus);
 
         // then
         assertThat(target1).isEqualTo(target2);
-        assertThat(target2.getTime()).isEqualTo(plus1);
+        assertThat(target2.getTime()).isEqualTo(plus);
     }
 
-    @DisplayName("휴가 사용 시간이 퇴근 시간이 넘는 경우, 1시간 미만이 남으면 버린다")
-    @Test
-    void plusHours_remain_under_1hour() {
+    @DisplayName("시간 더하고 비교하기 - 연차")
+    @MethodSource("generateDayVacation")
+    @ParameterizedTest
+    void plusHours_over8(int day, int hour) {
         // given
-        LocalTime start = LocalTime.of(17, 30);
-        VacationLocalDateTime target = VacationLocalDateTime.of(localDate, start);
+        LocalDateTime start = LocalDateTime.of(localDate, LocalTime.of(9, 0));
+        LocalDateTime end = LocalDateTime.of(localDate.plusDays(day), LocalTime.of(18, 0));
 
         // when
-        target = target.plusHours(1);
+        VacationLocalDateTime target1 = VacationLocalDateTime.of(start).plusHours(hour);
+        VacationLocalDateTime target2 = VacationLocalDateTime.of(end);
 
         // then
-        assertThat(target.getTime())
-            .isEqualTo(LocalDateTime.of(localDate, LocalTime.of(18, 0)));
-    }
-
-    @DisplayName("휴가 사용 시간이 퇴근 시간이 넘는 경우, 1시간 미만이 남으면 버린다")
-    @Test
-    void plusHours_remain_over_1hour() {
-        // given
-        LocalTime start = LocalTime.of(17, 30);
-        VacationLocalDateTime target = VacationLocalDateTime.of(localDate, start);
-
-        // when
-        target = target.plusHours(1);
-
-        // then
-        assertThat(target.getTime())
-            .isEqualTo(LocalDateTime.of(localDate, LocalTime.of(18, 0)));
-    }
-
-    @DisplayName("다음날로 넘어갈 경우 1시간 밑으로는 버리고 시간 추가")
-    @Test
-    void plusHours_remain_over_hour() {
-        // given
-        VacationLocalDateTime target1 = VacationLocalDateTime.of(localDate, LocalTime.of(17, 0));
-        VacationLocalDateTime target2 = VacationLocalDateTime.of(localDate, LocalTime.of(17, 30));
-        VacationLocalDateTime expect = VacationLocalDateTime.of(localDate.plusDays(1), LocalTime.of(11, 0));
-
-        // when
-        target1 = target1.plusHours(3);
-        target2 = target2.plusHours(3);
-
-        // then
-        assertThat(target1).isEqualTo(expect);
-        assertThat(target2).isEqualTo(expect);
         assertThat(target1).isEqualTo(target2);
+        assertThat(target1.getTime()).isEqualTo(end);
     }
 
     @DisplayName("시작시간 == 출근시간")

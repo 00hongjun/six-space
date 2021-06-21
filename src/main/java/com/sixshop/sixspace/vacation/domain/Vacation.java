@@ -9,6 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -22,7 +23,7 @@ import lombok.ToString;
 public class Vacation {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String userId;
     @Enumerated(EnumType.STRING)
@@ -36,6 +37,14 @@ public class Vacation {
     private Integer useHour;
     private String reason;
 
+    public Vacation(final String userId, final VacationLocalDateTime startDateTime, final Integer useHour) {
+        this.userId = userId;
+        this.startDateTime = startDateTime;
+        this.endDateTime = startDateTime.plusHours(useHour);
+        this.useHour = useHour;
+    }
+
+    @Deprecated
     public Vacation(final String userId, final VacationLocalDateTime startDateTime, final VacationLocalDateTime endDateTime, final Integer useHour) {
         this.userId = userId;
         this.startDateTime = startDateTime;
@@ -51,6 +60,15 @@ public class Vacation {
         return endDateTime.getTime();
     }
 
+    public void updateStartDateTime(VacationLocalDateTime dateTime, int useHour) {
+        this.startDateTime = dateTime;
+        this.useHour = useHour;
+        this.endDateTime = dateTime.plusHours(useHour);
+    }
+
+    public void updateReason(String reason) {
+        this.reason = reason;
+    }
     public boolean isDailyVacation() {
         return startDateTime.isStartGoOfficeTime() && endDateTime.isEndLeaveOfficeTime();
     }

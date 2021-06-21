@@ -6,20 +6,15 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.sixshop.sixspace.vacation.domain.Vacation;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
+import lombok.Builder.ObtainVia;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Repository;
 
 @RequiredArgsConstructor
-@Repository
-@Deprecated
-public class DayOfMonthVacationRepository {
+public class VacationCustomRepositoryImpl implements VacationCustomRepository{
 
     private final JPAQueryFactory queryFactory;
 
-    /**
-     * {@link VacationRepository#findAllByBetweenDates}
-     */
-    @Deprecated
     public List<Vacation> findAllByBetweenDates(LocalDateTime start, final LocalDateTime end) {
         return queryFactory
             .select(vacation)
@@ -30,10 +25,6 @@ public class DayOfMonthVacationRepository {
             .fetch();
     }
 
-    /**
-     * {@link VacationRepository#findAllByUserId}
-     */
-    @Deprecated
     public List<Vacation> findAllByUserId(String userId) {
         return queryFactory
             .select(vacation)

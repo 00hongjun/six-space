@@ -17,7 +17,7 @@ import lombok.ToString;
 public class VacationLocalDateTime {
 
     private static final int STANDARD_OF_MINUTE = 10;
-    private static final int ONE_HOUR = 1;
+    private static final int DAY_VACATION_HOUR = 8;
     private static final LocalTime GO_OFFICE_TIME = LocalTime.of(9, 0);
     private static final LocalTime LEAVE_OFFICE_TIME = LocalTime.of(18, 0);
 
@@ -42,44 +42,30 @@ public class VacationLocalDateTime {
     }
 
     public VacationLocalDateTime plusHours(int hours) {
-        int remainingHour = getRemainingHour(hours);
+        validateOperandHour(hours);
 
-        if (remainingHour >= ONE_HOUR) {
-            return overTomorrow(remainingHour);
+        if (hours < DAY_VACATION_HOUR) {
+            return VacationLocalDateTime.of(time.plusHours(hours));
         }
-        return inToday(hours);
+
+        return useDayVacation(hours);
     }
 
-    private VacationLocalDateTime overTomorrow(int hours) {
-        LocalDate localDate = time.plusDays(1)
+    private void validateOperandHour(int hours) {
+        if (hours < DAY_VACATION_HOUR) {
+            return;
+        }
+
+        if (hours % DAY_VACATION_HOUR != 0 || !GO_OFFICE_TIME.equals(time.toLocalTime())) {
+            throw new IllegalArgumentException("연차 시간 설정 에러");
+        }
+    }
+
+    private VacationLocalDateTime useDayVacation(int hours) {
+        LocalDate localDate = time.plusDays((hours / DAY_VACATION_HOUR) - 1)
             .toLocalDate();
-        LocalTime localTime = GO_OFFICE_TIME.plusHours(hours);
 
-        return VacationLocalDateTime.of(localDate, localTime);
-    }
-
-    private VacationLocalDateTime inToday(int hours) {
-        LocalDateTime localDateTime = time.plusHours(hours);
-        if (localDateTime.toLocalTime().isAfter(LEAVE_OFFICE_TIME)) {
-            localDateTime = localDateTime.minusMinutes(time.getMinute());
-        }
-
-        return new VacationLocalDateTime(localDateTime);
-    }
-
-    private int getRemainingHour(int hour) {
-        int plusHour = time.plusHours(hour).getHour(); // 사용 휴가 시간
-        int leaveHour = LEAVE_OFFICE_TIME.getHour(); // 퇴근시간
-
-        if (plusHour <= leaveHour) {
-            return 0;
-        }
-
-        if (plusHour - leaveHour < ONE_HOUR) {
-            return 0;
-        }
-
-        return plusHour - leaveHour;
+        return VacationLocalDateTime.of(localDate, LEAVE_OFFICE_TIME);
     }
 
     public Boolean isStartGoOfficeTime() {
