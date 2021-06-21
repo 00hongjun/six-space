@@ -29,7 +29,7 @@ public class DailyVacationStatisticsService {
         return allIncludeDay;
     }
 
-    public List<VacationResponse> compileDailyVacations(LocalDate localDate) {
+    private List<VacationResponse> prepareDailyVacation(LocalDate localDate) {
         Vacations vacations = Vacations.of(findDailyVacation(localDate));
 
         Vacations useDaily = vacations.getUseDaily(localDate);
@@ -45,8 +45,8 @@ public class DailyVacationStatisticsService {
         return collect;
     }
 
-    public List<VacationResponse> compileDailyVacations(int year, int month, int day) {
-        List<VacationResponse> vacationResponses = compileDailyVacations(LocalDate.of(year, month, day));
+    public List<VacationResponse> prepareDailyVacation(int year, int month, int day) {
+        List<VacationResponse> vacationResponses = prepareDailyVacation(LocalDate.of(year, month, day));
         List<String> userIds = vacationResponses.stream()
             .map(VacationResponse::getUserId)
             .collect(Collectors.toList());
