@@ -1,6 +1,5 @@
 package com.sixshop.sixspace.vacation.domain;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
@@ -40,22 +39,6 @@ public class Vacations {
             .filter(v -> v.getStartDateTimeValue().isAfter(criteria))
             .collect(Collectors.toList());
         return of(collect);
-    }
-
-    public Vacations getUseDaily(LocalDate localDate) { // 연차
-        List<Vacation> collect = vacations.stream()
-            .filter(Vacation::isDailyVacation)
-            .filter(v -> v.isIncludeDatePeriod(localDate))
-            .collect(Collectors.toList());
-        return Vacations.of(collect);
-    }
-
-    public Vacations getUseDailyHour(LocalDate localDate) { // 시차
-        List<Vacation> collect = vacations.stream()
-            .filter(v -> !v.isDailyVacation())
-            .filter(v -> v.isIncludeDatePeriod(localDate))
-            .collect(Collectors.toList());
-        return Vacations.of(collect);
     }
 
 }

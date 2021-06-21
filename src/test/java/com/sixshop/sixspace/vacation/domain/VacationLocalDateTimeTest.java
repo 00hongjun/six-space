@@ -215,34 +215,4 @@ class VacationLocalDateTimeTest {
         assertThat(target1.getTime()).isEqualTo(end);
     }
 
-    @DisplayName("시작시간 == 출근시간")
-    @Test
-    void isStartGoOfficeTime() {
-        // given
-        LocalTime startTime = LocalTime.of(9, 0);
-        LocalDateTime start = LocalDateTime.of(LocalDate.of(2021, 6, 20), startTime);
-
-        // when
-        VacationLocalDateTime vacationTime = VacationLocalDateTime.of(start);
-
-        // then
-        assertThat(vacationTime.isStartGoOfficeTime())
-            .isTrue();
-    }
-
-    @DisplayName("종료시간 == 퇴근시간")
-    @Test
-    void isEndLeaveOfficeTime() {
-        // given
-        LocalTime startTime = LocalTime.of(18, 0);
-        LocalDateTime start = LocalDateTime.of(LocalDate.of(2021, 6, 20), startTime);
-
-        // when
-        VacationLocalDateTime vacationTime = VacationLocalDateTime.of(start);
-
-        // then
-        assertThat(vacationTime.isEndLeaveOfficeTime())
-            .isTrue();
-    }
-
 }

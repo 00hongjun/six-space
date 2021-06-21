@@ -1,6 +1,5 @@
 package com.sixshop.sixspace.vacation.domain;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
@@ -69,18 +68,4 @@ public class Vacation {
     public void updateReason(String reason) {
         this.reason = reason;
     }
-    public boolean isDailyVacation() {
-        return startDateTime.isStartGoOfficeTime() && endDateTime.isEndLeaveOfficeTime();
-    }
-
-    public boolean isIncludeDatePeriod(LocalDate localDate) {
-        LocalDate start = getStartDateTimeValue()
-            .toLocalDate();
-        LocalDate end = getEndDateTimeValue()
-            .toLocalDate();
-
-        return (start.isBefore(localDate) || start.equals(localDate))
-            && (end.isAfter(localDate) || end.isEqual(localDate));
-    }
-
 }
