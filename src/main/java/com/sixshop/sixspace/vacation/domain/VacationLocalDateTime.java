@@ -68,12 +68,4 @@ public class VacationLocalDateTime {
         return VacationLocalDateTime.of(localDate, LEAVE_OFFICE_TIME);
     }
 
-    public Boolean isStartGoOfficeTime() {
-        return GO_OFFICE_TIME.equals(time.toLocalTime());
-    }
-
-    public Boolean isEndLeaveOfficeTime() {
-        return LEAVE_OFFICE_TIME.equals(time.toLocalTime());
-    }
-
 }

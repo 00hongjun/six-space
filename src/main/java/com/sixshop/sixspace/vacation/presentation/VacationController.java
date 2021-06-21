@@ -4,12 +4,9 @@ import com.sixshop.sixspace.vacation.presentation.dto.ApiResponse;
 import com.sixshop.sixspace.vacation.presentation.dto.DayOfMonthVacationResponse;
 import com.sixshop.sixspace.vacation.presentation.dto.UserMonthlyStatisticsResponse;
 import com.sixshop.sixspace.vacation.presentation.dto.VacationCreateRequest;
-import com.sixshop.sixspace.vacation.presentation.dto.VacationResponse;
 import com.sixshop.sixspace.vacation.presentation.dto.VacationUpdateRequest;
-import com.sixshop.sixspace.vacation.service.DailyVacationStatisticsService;
 import com.sixshop.sixspace.vacation.service.DayOfMonthVacationService;
 import com.sixshop.sixspace.vacation.service.VacationService;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,18 +25,18 @@ public class VacationController {
 
     private final DayOfMonthVacationService dayOfMonthVacationService;
     private final VacationService vacationService;
-    private final DailyVacationStatisticsService dailyVacationStatisticsService;
 
     @GetMapping("/{year}/{month}")
-    public ResponseEntity<DayOfMonthVacationResponse> getVacationsOfMonth(@PathVariable int year,
-        @PathVariable int month) {
+    public ResponseEntity<DayOfMonthVacationResponse> getVacationsOfMonth(@PathVariable int year, @PathVariable int month) {
         final DayOfMonthVacationResponse vacationsOfMonth = dayOfMonthVacationService.getVacationsOfMonth(year, month);
         return ResponseEntity.ok(vacationsOfMonth);
     }
 
-    @GetMapping("/users/{userId}")
+    @GetMapping("/users/{userId}/{year}/{month}")
     public ResponseEntity<ApiResponse> getUserMonthlyStatistics(
-        @PathVariable String userId) {
+        @PathVariable String userId,
+        @PathVariable int year,
+        @PathVariable int month) {
         UserMonthlyStatisticsResponse response = vacationService
             .generateUserMonthlyStatistics(userId);
         ApiResponse<UserMonthlyStatisticsResponse> result = ApiResponse.SUCCESS(
@@ -58,16 +55,6 @@ public class VacationController {
     public ResponseEntity updateVacation(@RequestBody VacationUpdateRequest request) {
         vacationService.update(request);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-    }
-
-    @GetMapping("/{year}/{month}/{day}")
-    public ResponseEntity<ApiResponse<List<VacationResponse>>> getDailyStatistics(
-        @PathVariable int year,
-        @PathVariable int month,
-        @PathVariable int day) {
-
-        List<VacationResponse> find = dailyVacationStatisticsService.prepareDailyVacation(year, month, day);
-        return ResponseEntity.ok(ApiResponse.SUCCESS(find));
     }
 
 }
