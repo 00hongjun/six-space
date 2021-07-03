@@ -22,3 +22,7 @@ spring:
   h2:
     console:
       enabled: true
+
+  slack:
+    webhook:
+      url: https://hooks.slack.com/services/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
