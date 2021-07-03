@@ -31,10 +31,10 @@ public class VacationController {
     private final DailyVacationStatisticsService dailyVacationStatisticsService;
 
     @GetMapping("/{year}/{month}")
-    public ResponseEntity<DayOfMonthVacationResponse> getVacationsOfMonth(@PathVariable int year,
+    public ResponseEntity<ApiResponse<DayOfMonthVacationResponse>> getVacationsOfMonth(@PathVariable int year,
         @PathVariable int month) {
         final DayOfMonthVacationResponse vacationsOfMonth = dayOfMonthVacationService.getVacationsOfMonth(year, month);
-        return ResponseEntity.ok(vacationsOfMonth);
+        return ResponseEntity.ok(ApiResponse.SUCCESS(vacationsOfMonth));
     }
 
     @GetMapping("/users/{userId}")
