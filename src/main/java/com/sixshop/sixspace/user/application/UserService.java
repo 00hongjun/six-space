@@ -31,4 +31,9 @@ public class UserService {
             .orElseThrow(() -> new IllegalArgumentException("회원 조회 실패"));
     }
 
+    public User findUserBySlackId(String slackId) {
+        return userRepository.findBySlackId(slackId)
+                             .orElseThrow(() -> new IllegalArgumentException("슬랙 ID로 회원 조회 실패"));
+    }
+
 }
