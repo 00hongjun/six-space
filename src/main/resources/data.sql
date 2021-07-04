@@ -1,8 +1,8 @@
 INSERT INTO user (id, email, join_date, name, nick_name, password, resignation_date, slack_id, total_vacation_time)
-VALUES (1, '00hongjun@sixshop.com', '2021-02-01', '최홍준', '이태오', '1234', null, 'U01NUKKL074', 15);
+VALUES (1, '00hongjun@sixshop.com', '2021-02-01', '최홍준', '이태오', '1234', null, 'U01NUKKL074', 100);
 
 INSERT INTO user (id, email, join_date, name, nick_name, password, resignation_date, slack_id, total_vacation_time)
-VALUES (2, 'ohtaeg@sixshop.com', '2021-04-01', '오태경', '태태로', '1234', null, 'U01SXH2CRT7', 15);
+VALUES (2, 'ohtaeg@sixshop.com', '2021-04-01', '오태경', '태태로', '1234', null, 'U01SXH2CRT7', 10);
 
 -- vacation
 INSERT INTO vacation (id, start_date_time, end_date_time, type, reason, use_hour, user_id)

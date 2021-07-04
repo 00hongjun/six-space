@@ -12,11 +12,11 @@ public class SlackVacationCommand {
 
     private static final Pattern START_TIME_PATTERN = Pattern.compile("^([9]|[0][9]|[1][0-2]|[1][4-7]):([0-5][0-9])$");
 
-    private TwoDays twoDay;
+    private final TwoDays twoDay;
 
-    private VacationLocalDateTime startTime;
+    private final VacationLocalDateTime startTime;
 
-    private int useHour;
+    private final int useHour;
 
     public SlackVacationCommand(final String message) {
         validFormat(message);
@@ -55,7 +55,7 @@ public class SlackVacationCommand {
 
     private int convertUseHour(final String hour) {
         final int useHour = Integer.parseInt(hour);
-        if (useHour == 0) {
+        if (useHour <= 0) {
             throw new IllegalArgumentException("휴가 커맨드에서 사용 시간이 잘못되었습니다.");
         }
         return useHour;
