@@ -24,28 +24,25 @@ public class SlackMessage {
     }
 
     public static SlackMessage fail(final String slackId) {
-        StringBuilder messageBuilder = new StringBuilder();
-        messageBuilder.append("<@").append(slackId).append(">")
-                      .append("님! 남은 휴가가 부족하여 휴가 등록이 실패되었어요 ㅠㅠ 다시 한번 확인 부탁드릴께요 :sob:")
-        ;
-        return new SlackMessage(messageBuilder.toString());
+        final String failMessage = String.format("<@%s>님! 남은 휴가가 부족하여 휴가 등록이 실패되었어요 ㅠㅠ 다시 한번 확인 부탁드릴께요 :sob:", slackId);
+        return new SlackMessage(failMessage);
     }
 
     public static SlackMessage success(final String slackId, final LocalDateTime startTime, final int useHour) {
         final DayOfWeek dayOfWeek = startTime.getDayOfWeek();
         final String displayName = dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.KOREAN);
-        StringBuilder messageBuilder = new StringBuilder();
-        messageBuilder.append("<@").append(slackId).append(">").append("님! ")
-                      .append(startTime.getMonth().getValue() + "/" + startTime.getDayOfMonth() +" ")
-                      .append("(").append(displayName).append(")")
-                      .append(" ").append(startTime.getHour()).append("시").append(getMinuteMessage(startTime.getMinute())).append("부터")
-                      .append(" ").append(useHour).append("시간 휴가 사용합니당")
-                      .append(" ").append(":surfer:")
-        ;
 
-        return new SlackMessage(messageBuilder.toString());
+        String successMessage = String.format("<@%s>님! %s/%d (%s) %d시%s부터 %d시간 휴가 사용합니당 :surfer:"
+            , slackId
+            , startTime.getMonth().getValue()
+            , startTime.getDayOfMonth()
+            , displayName
+            , startTime.getHour()
+            , getMinuteMessage(startTime.getMinute())
+            , useHour
+        );
+        return new SlackMessage(successMessage);
     }
-
 
     private static String getMinuteMessage(final int minute) {
         if (minute == 0) {
