@@ -1,5 +1,6 @@
 package com.sixshop.sixspace.slack.domain;
 
+import com.sixshop.sixspace.exception.IllegalFormatSlackCommandException;
 import java.time.LocalDate;
 import java.util.Arrays;
 
@@ -21,7 +22,7 @@ public enum TwoDays {
         return Arrays.stream(values())
                      .filter(twoDay -> twoDay.text.equalsIgnoreCase(value))
                      .findFirst()
-                     .orElseThrow(() -> new IllegalArgumentException("오늘 | 내일만 입력하실 수 있습니다."));
+                     .orElseThrow(() -> new IllegalFormatSlackCommandException("잘못된 휴가 커맨드 양식입니다. 오늘 | 내일만 입력하실 수 있습니다."));
     }
 
     public LocalDate toLocalDate() {

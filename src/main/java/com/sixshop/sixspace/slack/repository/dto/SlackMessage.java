@@ -23,8 +23,8 @@ public class SlackMessage {
         this.attachments = attachments;
     }
 
-    public static SlackMessage fail(final String slackId) {
-        final String failMessage = String.format("<@%s>님! 남은 휴가가 부족하여 휴가 등록이 실패되었어요 ㅠㅠ 다시 한번 확인 부탁드릴께요 :sob:", slackId);
+    public static SlackMessage fail(final String slackId, final String message) {
+        final String failMessage = String.format("<@%s>님! %s", slackId, message);
         return new SlackMessage(failMessage);
     }
 

@@ -1,6 +1,5 @@
 package com.sixshop.sixspace.slack.presentation;
 
-import com.sixshop.sixspace.slack.domain.SlackVacationCommand;
 import com.sixshop.sixspace.slack.presentation.dto.SlackCommandRequest;
 import com.sixshop.sixspace.slack.service.SlackWebHookService;
 import javax.validation.Valid;
@@ -19,6 +18,6 @@ public class SlackWebHookController {
 
     @PostMapping
     public void saveVacationBySlackCommand(@RequestBody @Valid final SlackCommandRequest request) {
-        slackWebHookService.notify(request.getSlackId(), new SlackVacationCommand(request.getCommandMessage()));
+        slackWebHookService.notify(request.getSlackId(), request.getCommandMessage());
     }
 }
