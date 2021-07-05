@@ -1,6 +1,5 @@
 package com.sixshop.sixspace.slack.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.sixshop.sixspace.exception.IllegalFormatSlackCommandException;
 import com.sixshop.sixspace.exception.NotEnoughVacationException;
 import com.sixshop.sixspace.slack.domain.SlackVacationCommand;
@@ -33,7 +32,7 @@ public class SlackWebHookService {
     private final SlackNotifier slackNotifier;
 
     @Transactional
-    public void notify(final String slackId, final String commandMessage) throws JsonProcessingException {
+    public void notify(final String slackId, final String commandMessage) {
         try {
             final SlackVacationCommand command = new SlackVacationCommand(commandMessage);
             final User user = userService.findUserBySlackId(slackId);
