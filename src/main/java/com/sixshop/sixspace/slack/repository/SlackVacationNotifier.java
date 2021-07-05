@@ -21,12 +21,7 @@ public class SlackVacationNotifier implements SlackNotifier {
     }
 
     @Override
-    public void send(final String webHookUrl, final SlackMessage slackMessage) {
-        try {
-            restTemplate.postForEntity(webHookUrl, objectMapper.writeValueAsString(slackMessage), String.class);
-        } catch (JsonProcessingException e) {
-            log.error("hooking error");
-            throw new IllegalArgumentException(e.getMessage());
-        }
+    public void send(final String webHookUrl, final SlackMessage slackMessage) throws JsonProcessingException {
+        restTemplate.postForEntity(webHookUrl, objectMapper.writeValueAsString(slackMessage), String.class);
     }
 }

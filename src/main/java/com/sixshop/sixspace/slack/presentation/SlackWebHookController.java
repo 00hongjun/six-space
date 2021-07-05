@@ -1,6 +1,6 @@
 package com.sixshop.sixspace.slack.presentation;
 
-import com.sixshop.sixspace.slack.domain.SlackVacationCommand;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.sixshop.sixspace.slack.presentation.dto.SlackCommandRequest;
 import com.sixshop.sixspace.slack.service.SlackWebHookService;
 import javax.validation.Valid;
@@ -18,7 +18,8 @@ public class SlackWebHookController {
     private final SlackWebHookService slackWebHookService;
 
     @PostMapping
-    public void saveVacationBySlackCommand(@RequestBody @Valid final SlackCommandRequest request) {
-        slackWebHookService.notify(request.getSlackId(), new SlackVacationCommand(request.getCommandMessage()));
+    public void saveVacationBySlackCommand(@RequestBody @Valid final SlackCommandRequest request)
+        throws JsonProcessingException {
+        slackWebHookService.notify(request.getSlackId(), request.getCommandMessage());
     }
 }

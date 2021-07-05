@@ -3,6 +3,7 @@ package com.sixshop.sixspace.slack.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import com.sixshop.sixspace.exception.IllegalFormatSlackCommandException;
 import java.time.LocalDateTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -34,7 +35,7 @@ class SlackVacationCommandTest {
 
         // when then
         assertThatThrownBy(() -> new SlackVacationCommand(message))
-            .isInstanceOf(IllegalArgumentException.class);
+            .isInstanceOf(IllegalFormatSlackCommandException.class);
     }
 
     @DisplayName("유효한 시작 시간이 들어오면 성공한다.")
@@ -65,7 +66,7 @@ class SlackVacationCommandTest {
 
         // when then
         assertThatThrownBy(() -> new SlackVacationCommand(message))
-            .isInstanceOf(IllegalArgumentException.class);
+            .isInstanceOf(IllegalFormatSlackCommandException.class);
     }
 
     @DisplayName("사용 시간 0이 아니면 성공한다.")
@@ -90,6 +91,6 @@ class SlackVacationCommandTest {
 
         // when then
         assertThatThrownBy(() -> new SlackVacationCommand(message))
-            .isInstanceOf(IllegalArgumentException.class);
+            .isInstanceOf(IllegalFormatSlackCommandException.class);
     }
 }

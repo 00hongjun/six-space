@@ -1,5 +1,6 @@
 package com.sixshop.sixspace.slack.domain;
 
+import com.sixshop.sixspace.exception.IllegalFormatSlackCommandException;
 import com.sixshop.sixspace.vacation.domain.VacationLocalDateTime;
 import java.time.LocalTime;
 import java.util.regex.Pattern;
@@ -29,18 +30,18 @@ public class SlackVacationCommand {
 
     private void validFormat(final String message) {
         if (message == null || message.trim().isEmpty()) {
-            throw new IllegalArgumentException("잘못된 휴가 커맨드 형식 입니다.");
+            throw new IllegalFormatSlackCommandException("잘못된 휴가 커맨드 형식 입니다.");
         }
 
         final String[] splits = message.split(" ");
         if (splits.length != 3) {
-            throw new IllegalArgumentException("잘못된 휴가 커맨드 형식 입니다.");
+            throw new IllegalFormatSlackCommandException("잘못된 휴가 커맨드 형식 입니다.");
         }
     }
 
     private VacationLocalDateTime convertVacationStartTime(final String time) {
         if (!isTime(time)) {
-            throw new IllegalArgumentException("휴가 커맨드에서 시작 시간이 잘못되었습니다.");
+            throw new IllegalFormatSlackCommandException("휴가 커맨드에서 시작 시간이 잘못되었습니다.");
         }
 
         final String[] splits = time.split(":");
@@ -56,7 +57,7 @@ public class SlackVacationCommand {
     private int convertUseHour(final String hour) {
         final int useHour = Integer.parseInt(hour);
         if (useHour <= 0) {
-            throw new IllegalArgumentException("휴가 커맨드에서 사용 시간이 잘못되었습니다.");
+            throw new IllegalFormatSlackCommandException("휴가 커맨드에서 사용 시간이 잘못되었습니다.");
         }
         return useHour;
     }

@@ -1,5 +1,8 @@
 package com.sixshop.sixspace.slack.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.sixshop.sixspace.exception.IllegalFormatSlackCommandException;
+import com.sixshop.sixspace.exception.NotEnoughVacationException;
 import com.sixshop.sixspace.slack.domain.SlackVacationCommand;
 import com.sixshop.sixspace.slack.repository.SlackNotifier;
 import com.sixshop.sixspace.slack.repository.dto.SlackMessage;
@@ -30,19 +33,23 @@ public class SlackWebHookService {
     private final SlackNotifier slackNotifier;
 
     @Transactional
-    public void notify(final String slackId, final SlackVacationCommand command) {
-        final User user = userService.findUserBySlackId(slackId);
+    public void notify(final String slackId, final String commandMessage) throws JsonProcessingException {
+        try {
+            final SlackVacationCommand command = new SlackVacationCommand(commandMessage);
+            final User user = userService.findUserBySlackId(slackId);
 
-        Vacations vacations = Vacations.of(dayOfMonthVacationRepository.findAllByUserId(user.getId()));
-        int totalUseHour = vacations.bringTotalUseHour();
-        int remain = user.getTotalVacationTime() - totalUseHour - command.getUseHour();
-        if (remain < 0) {
-            slackNotifier.send(webHookUrl, SlackMessage.fail(slackId));
-            return;
+            Vacations vacations = Vacations.of(dayOfMonthVacationRepository.findAllByUserId(user.getId()));
+            int totalUseHour = vacations.bringTotalUseHour();
+            int remain = user.getTotalVacationTime() - totalUseHour - command.getUseHour();
+            if (remain < 0) {
+                throw new NotEnoughVacationException();
+            }
+
+            vacationRepository.save(new Vacation(user.getId(), command.getStartTime(), command.getUseHour()));
+
+            slackNotifier.send(webHookUrl, SlackMessage.success(slackId, command.getStartTime().getTime(), command.getUseHour()));
+        } catch (IllegalFormatSlackCommandException | NotEnoughVacationException exception) {
+            slackNotifier.send(webHookUrl, SlackMessage.fail(slackId, exception.getMessage()));
         }
-
-        vacationRepository.save(new Vacation(user.getId(), command.getStartTime(), command.getUseHour()));
-
-        slackNotifier.send(webHookUrl, SlackMessage.success(slackId, command.getStartTime().getTime(), command.getUseHour()));
     }
 }
